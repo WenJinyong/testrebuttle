@@ -24,7 +24,7 @@ From the above tables, we can know that a competitive result can be obtained by 
 
 Besides, the correlation matrices under a solo *inter-view* or *intra-view* constraint are added to the Figure 14 of the revised version. The results show that any one has an ability to decouple various representation channels.
 
-**Question 2:** I'm curious about the details of sampling $\tau$ from $\mathcal{T}$. Specifically, how did the authors construct $\mathcal{T}$ in experiments? I have read Append M, $p_e$ and $p_f$ seem to be set as constants (from the context and Figures 14-15). However, in both Alg. 7 and descriptions in the main paper, \tau_A$ and \tau_B$ are re-sampled in each (outer-)iteration. If |$\mathcal{T}$|=2, the related claim is inadequate.
+**Question 2:** I'm curious about the details of sampling $\tau$ from $\mathcal{T}$. Specifically, how did the authors construct $\mathcal{T}$ in experiments? I have read Append M, $p_e$ and $p_f$ seem to be set as constants (from the context and Figures 14-15). However, in both Alg. 7 and descriptions in the main paper, $\tau_A$ and $\tau_B$ are re-sampled in each (outer-)iteration. If |$\mathcal{T}$|=2, the related claim is inadequate.
 
 **Answer:**  Each combination of the determined values of $p_f$ and $p_e$ constructs a function space $\mathcal{T}$. In the function space $\mathcal{T}$, all functions for data augmentation have a common property: they are consistent in the number of dropped edges and the number of masked feature channels. But various augmentation functions in the space $\mathcal{T}$ have different operation objects. In other words, the positions of dropped edges and  the indices of masked feature channels are different for various functions in  $\mathcal{T}$. 
 
