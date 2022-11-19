@@ -14,11 +14,11 @@ a) adopting matrix correlation to instantiate the consistency principle:
 
 b) adopting distance correlation to instantiate the consistency principle:
 
-| variants        | Cora          | Citeseer        | Pubmed         | Computers        | Photo           | Cs              | Physics          |
-| --------------- | ------------- | --------------- | -------------- | ---------------- | --------------- | --------------- | ---------------- |
-| both            | 83.2 \pm$ 0.5 | 72.6  $\pm$ 0.3 | 79.1 $\pm$ 0.6 | 88.41 $\pm$ 0.32 | 93.02 \pm$ 0.15 | 93.58 \pm$ 0.13 | 95.34 $\pm$ 0.09 |
-| only intra-view | 82.8 \pm$ 0.4 | 72.4  $\pm$ 0.4 | 78.7 $\pm$ 0.6 | 88.22 $\pm$ 0.35 | 92.92 \pm$ 0.13 | 93.34 \pm$ 0.15 | 95.26 $\pm$ 0.08 |
-| only inter-view | 82.7 \pm$ 0.6 | 72.3  $\pm$ 0.3 | 78.5 $\pm$ 0.5 | 88.18 $\pm$ 0.29 | 92.94 \pm$ 0.18 | 93.26 \pm$ 0.12 | 95.25 $\pm$ 0.08 |
+| variants        | Cora          | Citeseer        | Pubmed         | Computers        | Photo            | Cs               | Physics          |
+| --------------- | ------------- | --------------- | -------------- | ---------------- | ---------------- | ---------------- | ---------------- |
+| both            | 83.2 \pm$ 0.5 | 72.6  $\pm$ 0.3 | 79.1 $\pm$ 0.6 | 88.41 $\pm$ 0.32 | 93.02 $\pm$ 0.15 | 93.58 $\pm$ 0.13 | 95.34 $\pm$ 0.09 |
+| only intra-view | 82.8 \pm$ 0.4 | 72.4  $\pm$ 0.4 | 78.7 $\pm$ 0.6 | 88.22 $\pm$ 0.35 | 92.92 $\pm$ 0.13 | 93.34 $\pm$ 0.15 | 95.26 $\pm$ 0.08 |
+| only inter-view | 82.7 \pm$ 0.6 | 72.3  $\pm$ 0.3 | 78.5 $\pm$ 0.5 | 88.18 $\pm$ 0.29 | 92.94 $\pm$ 0.18 | 93.26 $\pm$ 0.12 | 95.25 $\pm$ 0.08 |
 
 From the above tables, we can know that a competitive result can be obtained by applying either the inter-view term or the intra-view term. The combination of two items enhances performance.
 
