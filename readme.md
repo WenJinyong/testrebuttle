@@ -1,40 +1,48 @@
-Thank you for your helpful feedback and constructive reviews. We will answer your questions as follows:
+Thank you for your careful reading and constructive comments. We will answer your questions as follows:
 
-**Question 1:** The data augmentation is based on dropping edges or feature masking, which plays the effect of merely smoothing the data and thus has limited room to bring improvement. Thus, it is not convincing that the contrastive self-supervised approach can really help the node representation learning significantly.
+**Question 1:** In DCD, the *inter-view* minimum correlation seems not well-motivated. Could the authors provide more discussions to clarify the necessity of the inter-view term? Will the dimensionality collapse still occur provided that the inter-view part is ignored?
 
-**Answer:**  Our goal in applying edge dropping and feature masking is to augment the data and obtain various views, aiming to extract common information across different views. Whether the two augmentation strategies indeed play a smoothing effect deserves a new and in-depth study. But intuitively, edge dropping doesn't seem to have a smoothing effect. Concretely, after dropping an edge, the nodes associated with the edge can not perform message aggregation with each other. From this perspective, edge dropping hinders graph smoothing. An extreme example is that all edges are dropped, where message propagation will not occur.
+**Answer:**  In fact, in DCD, either intra-view minimum correlation or inter-view minimum correlation has the ability to prevent dimensional collapse. The joint participation of the two items can better guarantee the effect of decorrelation. The relevant ablation studies are as follows:
+
+a) adopting matrix correlation to instantiate the consistency principle:
+
+| variants        | Cora           | Citeseer        | Pubmed         | Computers        | Photo            | Cs               | Physics          |
+| --------------- | -------------- | --------------- | -------------- | ---------------- | ---------------- | ---------------- | ---------------- |
+| both            | 84.5 $\pm$ 0.3 | 73.6  $\pm$ 0.3 | 81.7 $\pm$ 0.3 | 88.70 $\pm$ 0.31 | 93.14 $\pm$ 0.15 | 93.60 $\pm$ 0.08 | 95.42 $\pm$ 0.12 |
+| only intra-view | 84.2 $\pm$ 0.3 | 73.2  $\pm$ 0.4 | 81.4 $\pm$ 0.3 | 88.45 $\pm$ 0.28 | 93.02 $\pm$ 0.13 | 93.36 $\pm$ 0.10 | 95.27 $\pm$ 0.14 |
+| only inter-view | 84.0 $\pm$ 0.3 | 73.0  $\pm$ 0.3 | 80.9 $\pm$ 0.2 | 88.40 $\pm$ 0.34 | 93.05 $\pm$ 0.13 | 93.30 $\pm$ 0.09 | 95.24 $\pm$ 0.11 |
+
+b) adopting distance correlation to instantiate the consistency principle:
+
+| variants        | Cora          | Citeseer        | Pubmed         | Computers        | Photo           | Cs              | Physics          |
+| --------------- | ------------- | --------------- | -------------- | ---------------- | --------------- | --------------- | ---------------- |
+| both            | 83.2 \pm$ 0.5 | 72.6  $\pm$ 0.3 | 79.1 $\pm$ 0.6 | 88.41 $\pm$ 0.32 | 93.02 \pm$ 0.15 | 93.58 \pm$ 0.13 | 95.34 $\pm$ 0.09 |
+| only intra-view | 82.8 \pm$ 0.4 | 72.4  $\pm$ 0.4 | 78.7 $\pm$ 0.6 | 88.22 $\pm$ 0.35 | 92.92 \pm$ 0.13 | 93.34 \pm$ 0.15 | 95.26 $\pm$ 0.08 |
+| only inter-view | 82.7 \pm$ 0.6 | 72.3  $\pm$ 0.3 | 78.5 $\pm$ 0.5 | 88.18 $\pm$ 0.29 | 92.94 \pm$ 0.18 | 93.26 \pm$ 0.12 | 95.25 $\pm$ 0.08 |
+
+From the above tables, we can know that a competitive result can be obtained by applying either the inter-view term or the intra-view term. The combination of two items enhances performance.
+
+Besides, the correlation matrices under a solo *inter-view* or *intra-view* constraint are added to the Figure 14 of the revised version. The results show that any one has an ability to decouple various representation channels.
+
+**Question 2:** I'm curious about the details of sampling $\tau$ from $\mathcal{T}$. Specifically, how did the authors construct $\mathcal{T}$ in experiments? I have read Append M, $p_e$ and $p_f$ seem to be set as constants (from the context and Figures 14-15). However, in both Alg. 7 and descriptions in the main paper, \tau_A$ and \tau_B$ are re-sampled in each (outer-)iteration. If |$\mathcal{T}$|=2, the related claim is inadequate.
+
+**Answer:**  Each combination of the determined values of $p_f$ and $p_e$ constructs a function space $\mathcal{T}$. In the function space $\mathcal{T}$, all functions for data augmentation have a common property: they are consistent in the number of dropped edges and the number of masked feature channels. But various augmentation functions in the space $\mathcal{T}$ have different operation objects. In other words, the positions of dropped edges and  the indices of masked feature channels are different for various functions in  $\mathcal{T}$. 
+
+We take a more specific example to describe it more intuitively. Assuming the number of edges is $|\mathcal{E}|$ and the number of feature channels is $D$, given $p_f=0.2$ and $p_e=0.4$, a function space $\mathcal{T}$ is constructed. Each function $tau$ in $\mathcal{T}$ drops $p_e * |\mathcal{E}|$ edges and masks $p_f * D$ channels. However, various functions, such as $\tau_A$, $\tau_B$ and $\tau_C$, have their own operation objects. 
+
+The concrete implementation is provided in the anonymous link https://github.com/ICLR2023-ID3781/ICLR2023ID3781/blob/main/aug.py , which is also offered in Page 10 of the paper. $p_f$ is the "mask_prob" of function mask_feature(feature, mask_prob), and $p_f$ is the "mask_prob" of function mask_edge(graph, mask_prob).
+
+For each dataset, we fix $p_e$ and $p_f$, which determines the function space $\mathcal{T}$. Thus, the numbers of dropped edges and masked channels are determinate. We resample $\tau_A$ and $\tau_B$ in each iteration to decide which edges and feature channels to drop and mask. This operation makes augmented views different in various iterations, which helps to extract perturbation-invariant information.
 
 
 
-**Question 2:** The performance improvements are marginal. The reviewer is wondering whether the listed baselines are the state-of-the-art. For example, the results of C&S [2] and the referred results are not listed as baselines.
+**Question 3:** The introduction seems to focus on general contrastive learning while the topic of this paper is graph contrastive learning. The core of Introduction should be the main limitation of *graph* contrastive learning. More importantly, most discussions in Section 3 are independent of *graph*. It seems to limit the novelty and contributions of this paper to some extent.
 
-**Answer:** The comparison methods are classic and advanced methods in the field of graph contrastive learning, which have shown very competitive results. Thank you for the recommendation, and we have carefully read the paper you mentioned. C&S gets rid of topological dependence in forward computation, which greatly reduces consumption of time and computing resources while maintaining good performance. We have added C&S to baseline methods for comparison in Table 1 of the main paper.
+**Answer:**  The authors have long concentrated on graph machine learning and thus take graphs as the research object in this paper. In this paper, the experimental datasets, data augmentation and backbone networks are closely related to graphs. Indeed, as the reviewer says, some of the ideas and concepts in this paper can be transferred to other fields. The extension work deserves a new and in-depth research in the future. We really appreciate your comments and reminders.
 
-
-
-**Question 3:** The proposed approach is implemented over GCN, which suffers from over-smoothing issue. Could the proposed principles help to resolve the over-smoothing issue, or the over-smoothing issue is deteriorated further?
-
-**Answer:** The over-smoothing phenomenon usually occurs in *deep* graph neural networks [1]. In our study, we adopt one or two layers of GCNs, where there is no over-smoothing issue. Besides, under the homophily assumption, nodes closely connected on a graph tend to have similar labels. Thus, good representations benefit from properly smoothing, which makes neighborhood nodes more similar in representation space [1]. 
-
-Thank you very much for your inspiration. Based on your comments about graph smoothing, we studied the relationship between the decorrelation principle and graph smoothness. The results show that the decorrelation operation has potentially a smoothing effect on node representations, which helps learned representations cluster according to their true potential categories. The relevant content had been added to subsection 3.4 and appendix G. From this perspective, the decorrelation principle plays a similar role as the smoothing step of C&S. 
-
-We can draw a new conclusion about the role of the decorrelation principle: 1) decoupling various representation channels and facilitating informative representations; 2) smoothing node representations and making neighborhood nodes more similar in representation space.
-
-We really appreciate your comments and inspirations, which greatly enriches our research content and extent the research depth.
+In the past weeks, we have studied the relationship between the decorrelation principle and graph smoothness. The results show that the decorrelation operation has potentially a smoothing effect on node representations, which makes neighborhood nodes more similar in representation space. The relevant content had been added to subsection 3.4 and appendix G. These new studies strengthen the relationship between our research and graphs, and expand the depth of the research.
 
 
 
-**Question 4:** In page 6, a "Proposition 1" is given but there is no proof. It is unusual that a proposition is given without a proof. A statement without proof is nothing but a conjecture. On contrary, Lemma 1 is a basic fact in standard textbook of multivariable statistics analysis. No need to emphisize it as a lemma.
-
-**Answer:** For Proposition 1, we have empirically demonstrated its correctness through the experiments in subsection 4.4, Appendix H (Appendix I of the revised version), and Appendix I (Appendix J of the revised version). A lot of empirical research is also a support, so we would not change the title of Proposition 1. Thank you for your reminder, we have changed the title of "Lemma 1" to "Property 1". Specific statements and related proof of Property 1 are still retained for the convenience of those who may not be familiar with it.
-
-
-
-[1] Deeper insights into graph convolutional networks for semi-supervised learning. AAAI 2018.
-
-[2] Combining label propagation and simple models out-performs graph neural networks. ICLR, 2021.
-
-
-
-The above is our response to your suggestions and feedback. If you have any other questions or suggestions, please feel free to tell us. Thank you again for your constructive comments.
+We have tried our best to answer your questions carefully and improved our paper according to your comments. Your feedback is very important to us, and we look forward to further discussion and communication with you. Thank you for your careful comments again!
 
